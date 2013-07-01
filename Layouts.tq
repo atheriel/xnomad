@@ -24,6 +24,7 @@ min = `a,b| (a > b) ? b ! a`
 
     - focusOnWindow: window inWm: wm `window raise`
 }
+
 @TallLayout < Layout
 {
     - reflow: wm screen: screen space: spaceId
@@ -155,4 +156,5 @@ min = `a,b| (a > b) ? b ! a`
         windows each: `window| window setFrame: screenFrame`
     }
 }
+
 

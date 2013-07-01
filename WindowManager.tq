@@ -11,7 +11,7 @@ import "Accessibility"
     accessor: #activeWindows      initialValue: []
     accessor: #inactiveWindows    initialValue: []
     accessor: #windowsInMaster    initialValue: 1
-    accessor: #defaultRatio       initialValue: 0.7
+    accessor: #defaultRatio       initialValue: 0.65
     accessor: #defaultMaxMasters  initialValue: 1
     accessor: #layouts            initialValue: []
     accessor: #windowChecker

@@ -1,0 +1,136 @@
+import "Layouts"
+
+\ Obviously, not to scale:
+\ #=================#
+\ #        '        #   Legend:
+\ # *-------* *---* #   1   - Master Window
+\ # |       |.| 2 |'#   2,3 - Sub Windows
+\ # |       | *---* #   ''  - @border
+\ #'|   1   |   .   #   '   - @gutter
+\ # |       | *---* #
+\ # |       |.| 3 |'#
+\ # *-------* *---* #
+\ #         '       #
+\ #=================#
+@StudioLayout < Layout {
+    accessor: #border       initialValue: 40
+    accessor: #gutter       initialValue: 40
+    accessor: #ignoreMenu   initialValue: no
+
+    - reflow: wm screen: screen space: spaceId {
+        menubar_offset = 22
+        menubar_offset = 0 if @ignoreMenu
+
+        windows     = wm managedWindowsForScreen: screen space: spaceId
+        screenFrame = screen flippedFrame
+        masterCount = wm maxMastersOnScreen: screen space: spaceId
+
+        left = screenFrame[0][0] + @border
+        top  = screenFrame[0][1] + @border + menubar_offset
+        right = screenFrame[1][0] - @border
+        bottom = screenFrame[1][1] - @border - menubar_offset
+
+        width = right - left
+        height = bottom - top
+
+        \ gets the number of master and non-master windows
+        masterCount = min(windows count, masterCount)
+        subCount = windows count - masterCount
+        ^nil if masterCount == 0
+        ^nil if subCount == 0
+
+        \ work out geometry
+        masterRight = width * (wm ratioForScreen: screen space: spaceId) - (@gutter / 2)
+        subwindowLeft = masterRight + @gutter
+
+        \ size windows
+        i = 0
+        windows each: { win |
+            if i < masterCount {
+                frame = [[left, top], [masterRight - left, height]]
+            } else {
+                h = height / subCount
+                y = top + h * (i - masterCount)
+                if i < (windows count) - 1 {
+                    frame = [[subwindowLeft, y], [right - subwindowLeft, h - @gutter / 2]]
+                } else {
+                    frame = [[subwindowLeft, y + @gutter / 2], [right - subwindowLeft, bottom - (y + @gutter / 2)]]
+                }
+            }
+            win setFrame: frame
+            ++i
+        }
+    }
+}
+
+@PanelLayout < Layout {
+    accessor: #border       initialValue: 40
+    accessor: #gutter       initialValue: 40
+    accessor: #ignoreMenu   initialValue: no
+
+    - reflow: wm screen: screen space: spaceId {
+        menubar_offset = 22
+        menubar_offset = 0 if @ignoreMenu
+
+        windows     = wm managedWindowsForScreen: screen space: spaceId
+        screenFrame = screen flippedFrame
+        masterCount = wm maxMastersOnScreen: screen space: spaceId
+
+        left = screenFrame[0][0] + @border
+        top  = screenFrame[0][1] + @border + menubar_offset
+        right = screenFrame[1][0] - @border
+        bottom = screenFrame[1][1] - @border - menubar_offset
+
+        width = right - left
+        height = bottom - top
+
+        \ gets the number of master and non-master windows
+        masterCount = min(windows count, masterCount)
+        subCount = windows count - masterCount
+        ^nil if masterCount == 0
+        ^nil if subCount == 0
+
+        \ work out geometry
+        masterRight = width / 2
+        subwindowLeft = masterRight + @gutter
+        [left, masterRight, subwindowLeft, right] print
+
+        \ size windows
+        i = 0
+        windows each: { win |
+            if i < masterCount {
+                frame = [[left, top], [masterRight - left, height]]
+            } else {
+                frame = [[subwindowLeft, top], [right - subwindowLeft, height]]
+            }
+            win setFrame: frame
+            ++i
+        }
+    }
+}
+
+\ ----------------------------- `Center-Stage` Layout
+\ Centers all windows, and gives them a bit of space
+\ ---------------------------------------------------
+@CenterStageLayout < Layout {
+    accessor: #border       initialValue: 40
+    accessor: #ignoreMenu   initialValue: no
+
+    - reflow: wm screen: screen space: spaceId {
+        menubar_offset = 22
+        menubar_offset = 0 if @ignoreMenu
+
+        windows     = wm managedWindowsForScreen: screen space: spaceId
+        screenFrame = screen flippedFrame
+        masterCount = wm maxMastersOnScreen: screen space: spaceId
+
+        windows each: { win |
+            \ set the same size for each window 
+            left = screenFrame[0][0] + @border
+            top = screenFrame[0][1] + @border + menubar_offset
+            right = screenFrame[1][0] - @border
+            bottom = screenFrame[1][1] - @border - menubar_offset
+            win setFrame: [[left, top], [right - left, bottom - top]]
+        }
+    }
+}

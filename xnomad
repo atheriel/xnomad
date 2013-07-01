@@ -3,14 +3,15 @@
 import "WindowManager"
 import "Hotkeys"
 import "Layouts"
+import "CustomLayouts"
 
 wm = WindowManager new
-       setDefaultRatio: 0.7;
+       setDefaultRatio: 0.65;
     setWindowsInMaster: 1;
             \ See Layouts.tq for additional ones
-            setLayouts: [MultiColLayout new,
-                         MultiColLayout new setHorizontallyFlipped: yes; self,
-                         FullscreenLayout new];
+            setLayouts: [StudioLayout new,
+                         CenterStageLayout new setBorder: 40; self,
+                         PanelLayout new];
                   self
 
 mgr = HotkeyManager new
